@@ -10,10 +10,10 @@ import (
 )
 
 type User struct {
-	Id       int64
+	ID       int64
 	Name     string
 	Age      int
-	Password string    `xorm:"varchar(200)"`
+	Password string    `xorm:"password"`
 	Created  time.Time `xorm:"created"`
 	Updated  time.Time `xorm:"updated"`
 }
@@ -29,70 +29,89 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Insert
-	user := User{
-		Name:     "名前",
+	// メソッドを実行します
+	Insert(*engine)
+	Get(*engine)
+	Find(*engine)
+	Count(*engine)
+	Update(*engine)
+	Delete(*engine)
+}
+
+// Insert
+func Insert(engine xorm.Engine) {
+	newUser := User{
+		Name:     "太郎",
 		Password: "パスワード",
 		Age:      20,
 	}
-	_, err = engine.Table("user").Insert(user)
+	_, err := engine.Table("user").Insert(newUser)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Insert終了しました。")
-	fmt.Println("user:", user)
+	fmt.Println("newUser:", newUser)
+}
 
-	//Get 単体取得(1レコードを取得)
+//Get 単体取得(1レコードを取得)
+func Get(engine xorm.Engine) {
 	getUser := User{}
-	got, err := engine.Where("id = ?", 1).Get(&getUser)
+	result, err := engine.Where("id = ?", 1).Get(&getUser)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("got:", got)
 	fmt.Println("getUser:", getUser)
-	if !got {
+	if !result {
 		log.Fatal("Not Found")
 	}
+}
 
-	// Find 複数取得(複数レコードを取得)
-	getUsers := []User{}
-	err = engine.Where("age = ?", 20).Find(&getUsers)
+// Find 複数取得(複数レコードを取得)
+func Find(engine xorm.Engine) {
+	users := []User{}
+	// ageが20のuserを全件取得します
+	err := engine.Where("age = ?", 20).Find(&users)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("err:", err)
-	fmt.Println("getUsers:", getUsers)
-	if !got {
-		log.Fatal("Not Found")
-	}
+	fmt.Println("users:", users)
+}
 
-	// Count レコードの数を取得
-	countUser := User{}
-	count, err := engine.Count(&countUser)
+// Count レコードの数を取得
+func Count(engine xorm.Engine) {
+	user := User{}
+	count, err := engine.Count(&user)
 	if err != nil {
 		log.Println(err)
-		return
 	}
 	fmt.Println("レコード数:", count)
+}
 
-	// Update
-	updateUser := User{
-		Name:     "更新名前",
-		Password: "更新パスワード",
-		Age:      20,
+// Update
+func Update(engine xorm.Engine) {
+	user := User{
+		Name:     "更新した名前",
+		Password: "更新したパスワード",
+		Age:      30,
 	}
-	gots, err := engine.Where("id =?", 1).Update(&updateUser)
+	result, err := engine.Where("id =?", 1).Update(&user)
 	if err != nil {
 		log.Println(err)
-		return
 	}
-	fmt.Println("gots:", gots)
-	fmt.Println("updateUser:", updateUser)
+	if result == 0 {
+		log.Fatal("Not Found")
+	}
+	fmt.Println("user:", user)
+}
 
-	// Delete
-	deleteUser := User{}
-	deleter, err := engine.Where("id=?", 11).Delete(&deleteUser)
-	fmt.Println("deleter:", deleter)
-	fmt.Println("deleteUser:", deleter)
-
+// Delete
+func Delete(engine xorm.Engine) {
+	user := User{}
+	result, err := engine.Where("id=?", 11).Delete(&user)
+	if err != nil {
+		log.Println(err)
+	}
+	if result == 0 {
+		log.Fatal("Not Found")
+	}
+	fmt.Println("user:", user)
 }
