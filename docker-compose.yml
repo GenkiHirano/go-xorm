@@ -1,12 +1,12 @@
 version: "3"
 services:
   mysql:
-    image: mysql:5.6
+    image: mysql:5.7
     container_name: some-mysql
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=hoge
+      - MYSQL_DATABASE=sample_db
     command: >
       --character-set-server=utf8mb4
       --collation-server=utf8mb4_general_ci
