@@ -10,7 +10,7 @@ import (
 )
 
 type User struct {
-	ID       int64
+	ID       int64 `xorm:"id" xorm:"notnull"`
 	Name     string
 	Age      int
 	Password string    `xorm:"password"`
@@ -30,36 +30,36 @@ func main() {
 	}
 
 	// メソッドを実行します
-	Insert(*engine)
-	Get(*engine)
-	Find(*engine)
+	// Insert(*engine)
+	// Get(*engine)
+	// Find(*engine)
 	Count(*engine)
-	Update(*engine)
-	Delete(*engine)
+	// Update(*engine)
+	// Delete(*engine)
 }
 
 // Insert
 func Insert(engine xorm.Engine) {
-	newUser := User{
+	user := User{
 		Name:     "太郎",
 		Password: "パスワード",
 		Age:      20,
 	}
-	_, err := engine.Table("user").Insert(newUser)
+	_, err := engine.Table("user").Insert(user)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("newUser:", newUser)
+	fmt.Println("user:", user)
 }
 
 //Get 単体取得(1レコードを取得)
 func Get(engine xorm.Engine) {
-	getUser := User{}
-	result, err := engine.Where("id = ?", 1).Get(&getUser)
+	user := User{}
+	result, err := engine.Where("id = ?", 1).Get(&user)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("getUser:", getUser)
+	fmt.Println("user:", user)
 	if !result {
 		log.Fatal("Not Found")
 	}
@@ -106,7 +106,7 @@ func Update(engine xorm.Engine) {
 // Delete
 func Delete(engine xorm.Engine) {
 	user := User{}
-	result, err := engine.Where("id=?", 11).Delete(&user)
+	result, err := engine.Where("id=?", 1).Delete(&user)
 	if err != nil {
 		log.Println(err)
 	}
@@ -114,4 +114,5 @@ func Delete(engine xorm.Engine) {
 		log.Fatal("Not Found")
 	}
 	fmt.Println("user:", user)
+	fmt.Println(result)
 }
