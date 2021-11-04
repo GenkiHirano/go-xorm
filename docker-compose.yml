@@ -14,7 +14,7 @@ services:
       --innodb_file_format=BARRACUDA
       --innodb_large_prefix=1
     ports:
-      - 3306:3306
+      - 3307:3307
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     ports:
